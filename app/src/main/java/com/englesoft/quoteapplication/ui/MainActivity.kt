@@ -1,12 +1,40 @@
 package com.englesoft.quoteapplication.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.englesoft.quoteapplication.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.englesoft.quoteapplication.adapter.QuoteListAdapter
+import com.englesoft.quoteapplication.databinding.ActivityMainBinding
+import com.englesoft.quoteapplication.viewmodel.QuoteViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+    private lateinit var quoteListAdapter: QuoteListAdapter
+    private lateinit var quoteViewModel: QuoteViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        //init
+        quoteViewModel = ViewModelProvider(this)[QuoteViewModel::class.java]
+        quoteListAdapter = QuoteListAdapter()
+
+        binding.rvQuotes.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            hasFixedSize()
+            adapter = quoteListAdapter
+        }
+
+        quoteViewModel.quoteList.observe(this) {
+            quoteListAdapter.submitData(lifecycle, it)
+        }
+
     }
 }
