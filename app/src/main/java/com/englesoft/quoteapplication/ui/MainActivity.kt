@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.englesoft.quoteapplication.adapter.LoaderAdapter
 import com.englesoft.quoteapplication.adapter.QuoteListAdapter
 import com.englesoft.quoteapplication.databinding.ActivityMainBinding
 import com.englesoft.quoteapplication.viewmodel.QuoteViewModel
@@ -29,7 +30,10 @@ class MainActivity : AppCompatActivity() {
         binding.rvQuotes.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             hasFixedSize()
-            adapter = quoteListAdapter
+            adapter = quoteListAdapter.withLoadStateHeaderAndFooter(
+                header = LoaderAdapter(),
+                footer = LoaderAdapter()
+            )
         }
 
         quoteViewModel.quoteList.observe(this) {
